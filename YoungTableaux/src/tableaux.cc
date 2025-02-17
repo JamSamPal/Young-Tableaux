@@ -1,18 +1,43 @@
 #include "tableaux.hpp"
+#include <iostream>
+YoungTableaux::YoungTableaux(const int &order):order_(order){}
 
-YoungTableaux::YoungTableaux(const int &order):order_(order){numberDiagrams_=CalculateNumberDiagrams(order);}
+void YoungTableaux::DrawYoungTableau(const std::vector<int> &partitionList){
+    std::cout << numberDiagrams_ << "\n";
+    for (const int length : partitionList){
+        for (int i = 0; i < length; i++){
+            std::cout << "□";
+        }
+        if (length != 0){
+        std::cout << "\n";
+        }
+    }
+    std::cout << "\n";
+}
 
-int YoungTableaux::CalculateNumberDiagrams(const int &order){
-    if (order < 1){
-        return 0;
-    }
-    else if (order == 1){
-        return 1;
-    }
-    else{
-        return CalculateNumberDiagrams(order-1) + (order-1)*CalculateNumberDiagrams(order-2);
-    }
+void YoungTableaux::GeneratePartitions(){
+    std::vector<int> partitionList(order_);
+    int currIndex = 0;
+    partitionList[currIndex] = order_;
 
+    while (true){
+        numberDiagrams_++;
+        DrawYoungTableau(partitionList);
+
+        while (currIndex >= 0 && partitionList[currIndex] ==1){
+            currIndex--;
+        }
+
+        if (currIndex < 0){return;}
+
+        int curr_value = partitionList[currIndex];
+        partitionList[currIndex]--;
+        while (partitionList[currIndex+1] + 1 >= curr_value){
+            currIndex++;
+        }
+        partitionList[currIndex+1]++;
+        currIndex++;
+    }
 }
 
 

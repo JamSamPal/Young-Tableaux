@@ -9,7 +9,7 @@ int main(int argc, char** argv){
 
     int order = std::stoi(argv[1]);
     YoungTableaux yt(order);
-    std::cout << "Number of young diagrams for order " << order << " = " << yt.numberDiagrams_ << "\n";
-
+    std::cout << "Here are the young diagrams:\n";
+    yt.GeneratePartitions();
     return 0;
 }
