@@ -17,8 +17,21 @@ void YoungTableaux::DrawYoungTableau(const std::vector<int> &partitionList){
     std::cout << "\n";
 }
 
+void YoungTableaux::GeneratePartitions(){
+
+    std::vector<int> partitionList(order_);
+    int currIndex = 0;
+    // Enumerates the Tableaux with each Tableau being arranged in a vector.
+    // E.g. if order = 4. Then we find all the diagrams that partition
+    // 4 into 1,2,3 and 4 pieces.
+    for (int i = 1; i <= order_; i++){
+        GenerateRestrictedPartition(order_, i, currIndex, partitionList);
+    }
+}
+
 void YoungTableaux::GenerateRestrictedPartition(int order, int partitions, int currIndex, std::vector<int> partitionList){
 
+    // Just one partition means we can return
     if(partitions==1){
         partitionList[currIndex] = order;
         numberDiagrams_++;
@@ -26,8 +39,9 @@ void YoungTableaux::GenerateRestrictedPartition(int order, int partitions, int c
         return;
     }
 
+    // To ensure our diagrams are strictly decreasing
+    // we cap the max index based on previously added partition
     int maxIndex = 0;
-    int minIndex = 0;
 
     if(currIndex >0){
         maxIndex = std::min(order-partitions+1, partitionList[currIndex-1]);
@@ -39,6 +53,9 @@ void YoungTableaux::GenerateRestrictedPartition(int order, int partitions, int c
     
     for (int j = maxIndex; j > 0; j--){
         partitionList[currIndex] = j;
+        // If this condition is not met the next
+        // generated partition will not be strictly
+        // decreasing
         if ((order-j)/(partitions-1) <= j){
             GenerateRestrictedPartition(order-j, partitions-1, currIndex +1, partitionList);
         }
@@ -46,22 +63,14 @@ void YoungTableaux::GenerateRestrictedPartition(int order, int partitions, int c
 
 }
 
-void YoungTableaux::GeneratePartitions(){
-    std::vector<int> partitionList(order_);
-    int currIndex = 0;
-
-    for (int i = 1; i <= order_; i++){
-        GenerateRestrictedPartition(order_, i, currIndex, partitionList);
-    }
-}
-
 void YoungTableaux::SavePartitionNumber(){
+    // Needed for python testing
     std::ofstream outFile("partitionNumber.bin", std::ios::binary);
 
     if (outFile.is_open()) {
         outFile.write(reinterpret_cast<char*>(&numberDiagrams_), sizeof(numberDiagrams_));
         
-        std::cout << "Integer written to file.\n";
+        std::cout << "Number of diagrams written to file.\n";
 
         outFile.close();
     } else {
