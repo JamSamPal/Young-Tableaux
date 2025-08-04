@@ -3,7 +3,7 @@ import subprocess
 
 from pathlib import Path
 
-executable = Path(__file__).parent / "../src/main"
+executable = Path(__file__).parent.parent / "src/main"
 bin = Path(__file__).parent.parent / "partitionNumber.bin"
 
 
