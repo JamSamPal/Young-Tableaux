@@ -1,6 +1,6 @@
 import struct
 import subprocess
-
+import numpy as np
 from pathlib import Path
 
 executable = Path(__file__).parent.parent / "src/main"
@@ -12,9 +12,7 @@ def test_YoungTableaux_4():
     # diagrams
     subprocess.run(f"{str(executable)} {str(4)}", shell=True)
 
-    data = bin.read_bytes()
-
-    numberDiagrams = struct.unpack("I" * (len(data) // 4), data)[0]
+    numberDiagrams = np.loadtxt("partitionNumber.txt")
 
     assert numberDiagrams == count_partitions(4)
 
@@ -23,10 +21,7 @@ def test_YoungTableaux_10():
     # we run the executable with arguments then grab the number of
     # diagrams
     subprocess.run(f"{str(executable)} {str(10)}", shell=True)
-
-    data = bin.read_bytes()
-
-    numberDiagrams = struct.unpack("I" * (len(data) // 4), data)[0]
+    numberDiagrams = np.loadtxt("partitionNumber.txt")
 
     assert numberDiagrams == count_partitions(10)
 
